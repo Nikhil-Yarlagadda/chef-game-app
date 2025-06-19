@@ -38,6 +38,7 @@ class GameViewModel: ViewModel() {
         )
         for(i in 0 until 5){
             _uiState.value.squares[i][0].occupant = Occupancy.Plyr
+            _uiState.value.squares[i][0].piece = p1.pieces[i]
         }
 
         val comp: Player = Player(name = "comp",
@@ -53,6 +54,7 @@ class GameViewModel: ViewModel() {
         )
         for(i in 0 until 5){
             _uiState.value.squares[i][4].occupant = Occupancy.Comp
+            _uiState.value.squares[i][4].piece = comp.pieces[i]
         }
 
         _uiState.value = GameUiState(

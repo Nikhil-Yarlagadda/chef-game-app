@@ -9,6 +9,9 @@ class aiAlgo1 {
 
 
     fun succ(gameState:GameUiState): List<GameUiState>{
+        if(gameState.winner != null){
+            return emptyList()
+        }
         val currentPlayer = gameState.turn
         val board = gameState.squares
         val succStates = emptyList<GameUiState>().toMutableList()
@@ -62,7 +65,7 @@ class aiAlgo1 {
                         plyr.pieces[j].pos = temp.squares[k.x][k.y]*/
 
                         val usedMove = plyr.movesets[i]
-                        plyr.movesets[i] = temp.standby?: MoveSet(emptyList(), "")
+                        plyr.movesets[i] = temp.standby?: MoveSet(emptyList(), "",0,0)
                         temp.standby = usedMove
 
                         if(temp.squares[k.x][k.y].occupant != Occupancy.Vacant){
@@ -80,7 +83,7 @@ class aiAlgo1 {
                                 }
                             }
                         }
-                        
+
                         temp.squares[k.x][k.y].occupant = plyr.pieces[j].pos.occupant
                         plyr.pieces[j].pos.occupant = Occupancy.Vacant
                         plyr.pieces[j].pos = temp.squares[k.x][k.y]
@@ -94,7 +97,14 @@ class aiAlgo1 {
         return succStates
     }
 
-    fun gameValue(plyr:Player): Int{
+    fun gameValue(player:Player): Int{
+        val plyr: Player
+        if(player.homeBase.y == 4){
+            plyr = player
+        }
+        else{
+            plyr = player.opp!!
+        }
         if(!plyr.main.alive){
             return -1
         }
@@ -111,11 +121,26 @@ class aiAlgo1 {
         return 0
     }
 
-    fun heuristic(state:GameUiState): Int{
-        return 0
+    fun heuristic(state:GameUiState): Double{
+        val gameOver = gameValue(state.turn)
+        val comp: Player
+        val plyr: Player
+        if(gameOver != 0){
+            return gameOver.toDouble()
+        }
+
+        if(state.turn.homeBase.y == 4){
+            comp = state.turn
+            plyr = comp.opp!!
+        }else{
+            plyr = state.turn
+            comp = plyr.opp!!
+        }
+
+       return  (comp.pieces.size - plyr.pieces.size) * .24
     }
 
-    fun maxValue(state:GameUiState, depth:Int, alpha:Int, beta:Int): Int{
+    fun maxValue(state:GameUiState, depth:Int, alpha:Double, beta:Double): Double{
         if(depth == maxDepth){
             return heuristic(state)
         }
@@ -133,7 +158,7 @@ class aiAlgo1 {
         return max
     }
 
-    fun minValue(state:GameUiState, depth:Int, alpha:Int, beta:Int): Int{
+    fun minValue(state:GameUiState, depth:Int, alpha:Double, beta:Double): Double{
         if(depth == maxDepth){
             return heuristic(state)
         }
@@ -152,11 +177,11 @@ class aiAlgo1 {
     }
 
     fun makeMove(state:GameUiState):GameUiState{
-        var max = -2;
+        var max = -2.0;
         var maxS: GameUiState = state
         var succ = succ(state)
         for(s in succ){
-            val m = maxValue(s,0,-2,2)
+            val m = maxValue(s,0,-2.0,2.0)
             if(m > max){
                 max = m
                 maxS = s
