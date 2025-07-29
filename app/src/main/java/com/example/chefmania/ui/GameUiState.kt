@@ -1,10 +1,14 @@
 package com.example.chefmania.ui
 
+import android.text.Highlights
 import com.example.chefmania.data.*
 
 data class GameUiState(
+    var ai: Int = 0,
+    var AIRunning: Boolean = false,
     var currentSelectedPiece: Piece? = null,
     var currentSelectedMovSet: MoveSet? = null,
+    var highlights: List<Coordinate>? = null,
     var turn: Player = Player(name = "", pieces = emptyList(), homeBase =  Coordinate(0,0)),
     val movesets: List<MoveSet> = emptyList(),
     val players: List<Player> = emptyList(),

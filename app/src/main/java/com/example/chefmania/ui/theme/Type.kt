@@ -43,7 +43,7 @@ val AppTypography = Typography(
     labelMedium = TextStyle(
         fontFamily = crimsonTextItalic,
         fontWeight = FontWeight.Thin,
-        fontSize = 24.sp
+        fontSize = 18.sp
     ),
 )
 

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,7 +22,7 @@ enum class ChefMania{
 @Composable
 fun chefmania(
     finish: ()->Unit,
-    viewModel: GameViewModel = GameViewModel(),
+    viewModel: GameViewModel = viewModel(),
     navController: NavHostController = rememberNavController(),
     modifier: Modifier = Modifier){
 
@@ -35,18 +36,19 @@ fun chefmania(
     ){
         composable(route = ChefMania.Home.name) {
             println("Hi")
-            HomeScreen().homeScreen({
-                viewModel.resetGame()
+            HomeScreen().homeScreen({ diff ->
+                viewModel.resetGame(diff)
                 navController.navigate(ChefMania.Game.name)
             }, {
-                viewModel.resetGame()
+                viewModel.resetGame(0)
                 navController.navigate(ChefMania.HowtoPlay.name)
             },
             finish)
         }
 
         composable(route = ChefMania.Game.name) {
-            GameScreen().gameScreen(gameUiState = gameUiState)
+            GameScreen().gameScreen(viewModel = viewModel,
+            {navController.navigate(ChefMania.Home.name)})
         }
 
         composable(route = ChefMania.HowtoPlay.name) {

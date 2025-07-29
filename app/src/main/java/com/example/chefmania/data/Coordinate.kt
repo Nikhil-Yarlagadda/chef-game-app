@@ -1,5 +1,7 @@
 package com.example.chefmania.data
 
+import kotlin.math.abs
+
 data class Coordinate(
     var x: Int,
     var y: Int,
@@ -11,5 +13,8 @@ data class Coordinate(
     }
     fun sub(other: Coordinate): Coordinate {
         return Coordinate(x-other.x, y-other.y)
+    }
+    fun dist(other: Coordinate): Int{
+        return abs(x- other.x) + abs(y - other.y)
     }
 }
