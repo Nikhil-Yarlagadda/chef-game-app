@@ -1,7 +1,7 @@
 [versions]
 agp = "8.6.0"
 gson = "2.10.1"
-kotlin = "1.9.0"
+kotlin = "2.1.0"
 coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -40,4 +40,5 @@ androidx-navigation-compose-jvmstubs = { group = "androidx.navigation", name = "
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-ksp = { id = "com.google.devtools.ksp", version = "1.9.22-1.0.18" }
+ksp = { id = "com.google.devtools.ksp", version = "2.1.0-1.0.29" }
+compiler ={id = "org.jetbrains.kotlin.plugin.compose", version = "2.0.0"}

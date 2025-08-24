@@ -14,6 +14,7 @@ import com.example.chefmania.ui.GameScreen
 import com.example.chefmania.ui.GameUiState
 import com.example.chefmania.ui.GameViewModel
 import com.example.chefmania.ui.HomeScreen
+import com.example.chefmania.ui.InstruScreen
 
 enum class ChefMania{
     Home,Game,HowtoPlay
@@ -31,16 +32,17 @@ fun chefmania(
 
     NavHost(
         navController = navController,
-        startDestination = ChefMania.Home.name,
+        startDestination = if(gameUiState.gameOnGoing) ChefMania.Game.name else ChefMania.Home.name,
         modifier = Modifier
     ){
+
+
         composable(route = ChefMania.Home.name) {
             println("Hi")
             HomeScreen().homeScreen({ diff ->
                 viewModel.resetGame(diff)
                 navController.navigate(ChefMania.Game.name)
             }, {
-                viewModel.resetGame(0)
                 navController.navigate(ChefMania.HowtoPlay.name)
             },
             finish)
@@ -48,11 +50,12 @@ fun chefmania(
 
         composable(route = ChefMania.Game.name) {
             GameScreen().gameScreen(viewModel = viewModel,
-            {navController.navigate(ChefMania.Home.name)})
+            {navController.navigate(ChefMania.Home.name)
+             viewModel.uiState.value.gameOnGoing = false})
         }
 
         composable(route = ChefMania.HowtoPlay.name) {
-            //GameScreen().gameScreen()
+            InstruScreen().instructions()
         }
     }
 }

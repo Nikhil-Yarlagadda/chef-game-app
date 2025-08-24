@@ -14,9 +14,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,6 +36,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.example.chefmania.R
 import com.example.chefmania.data.Coordinate
 import com.example.chefmania.data.MainPiece
@@ -45,12 +48,39 @@ class GameScreen {
     @Composable
     fun gameScreen(viewModel: GameViewModel, gameOver: ()->Unit) {
         val uiState by viewModel.uiState.collectAsState()
-        println(uiState.players[0].pieces.size)
-        println(uiState.players[1].pieces.size)
-        println(uiState.players[1].main.alive)
         val enabled = uiState.turn == uiState.players[0]
+        var menu by remember { mutableStateOf(false)}
         if(uiState.winner!=null){
-            gameOver()
+            uiState.gameOnGoing = false
+            Dialog({}) {
+                Card(modifier = Modifier.size(400.dp,350.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFD5BDB6))) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.size(400.dp, 500.dp)
+                    ) {
+                        Text(
+                            text = if(uiState.winner == uiState.players[0])"YOU WIN!!!" else "YOU LOSE!!!",
+                            color = MaterialTheme.colorScheme.tertiary,
+                            style = MaterialTheme.typography.displayLarge
+                        )
+
+                        OutlinedButton(border = BorderStroke(1.dp, Color.White),
+                            elevation = ButtonDefaults.elevatedButtonElevation(24.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onPrimary),
+                            onClick = {
+                                gameOver()
+                            }, modifier = Modifier.padding(24.dp)
+                        ) {
+                            Text(
+                                "Back to Menu",
+                                color = MaterialTheme.colorScheme.tertiary,
+                                style = MaterialTheme.typography.headlineMedium
+                            )
+                        }
+                    }
+                }
+            }
         }
         else if(uiState.AIRunning){
             viewModel.compMove()
@@ -59,11 +89,61 @@ class GameScreen {
             modifier = Modifier.fillMaxSize().background(Color(0xFFD5BDB6))
         ) {
             Column(modifier = Modifier.matchParentSize()) {
+                if(menu){
+                    Dialog({}) {
+                        Card(modifier = Modifier.size(350.dp,285.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFFD5BDA9))) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                Text(
+                                    "Menu",
+                                    color = Color.Black,
+                                    style = MaterialTheme.typography.headlineMedium.copy(fontSize = 54.sp)
+                                )
 
+                                OutlinedButton(border = BorderStroke(1.dp, Color.White),
+                                    elevation = ButtonDefaults.elevatedButtonElevation(24.dp),
+                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onPrimary),
+                                    onClick = { menu = false }, modifier = Modifier.padding(24.dp).weight(1.0f, false)
+                                ) {
+                                    Text(
+                                        "Resume",
+                                        color = MaterialTheme.colorScheme.tertiary,
+                                        style = MaterialTheme.typography.headlineMedium
+                                    )
+                                }
+
+                                OutlinedButton(border = BorderStroke(1.dp, Color.White),
+                                    elevation = ButtonDefaults.elevatedButtonElevation(24.dp),
+                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.onPrimary),
+                                    onClick = {
+                                        menu = false
+                                        gameOver()
+                                    }, modifier = Modifier.padding(24.dp).weight(1.0f, false)
+                                ) {
+                                    Text(
+                                        "Quit",
+                                        color = MaterialTheme.colorScheme.tertiary,
+                                        style = MaterialTheme.typography.headlineMedium
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
                 //opponent cards
                 Row(
                     Modifier.padding(6.dp, 3.dp)
                 ) {
+                    Image(
+                        painter = painterResource(R.drawable.baseline_menu_24),
+                        contentDescription = null,
+                        modifier = Modifier.size(24.dp).clickable(
+                            onClick = {menu = true}
+                        )
+                    )
                     Card(
                         colors = CardDefaults.cardColors().copy(containerColor = Color(0xffe0d8bb)),
                         border = BorderStroke(2.dp, MaterialTheme.colorScheme.tertiary),

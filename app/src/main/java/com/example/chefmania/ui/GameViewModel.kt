@@ -30,10 +30,15 @@ class GameViewModel: ViewModel() {
     init{
        //resetGame()
     }
+    fun updateState(state: GameUiState){
+        _uiState.update {
+            state
+        }
+    }
 
     fun resetGame(diff: Int){
         _uiState.update {
-            GameUiState()
+            GameUiState(gameOnGoing = true)
         }
 
         val movesets: List<MoveSet> = MoveSet.staticSelect5()
@@ -75,6 +80,7 @@ class GameViewModel: ViewModel() {
         _uiState.update {
             gameUiState ->
             GameUiState(
+                gameOnGoing = true,
                 movesets = movesets,
                 players = listOf(p1,comp),
                 turn = p1,

@@ -4,6 +4,7 @@ import android.text.Highlights
 import com.example.chefmania.data.*
 
 data class GameUiState(
+    var gameOnGoing: Boolean = false,
     var ai: Int = 0,
     var AIRunning: Boolean = false,
     var currentSelectedPiece: Piece? = null,
