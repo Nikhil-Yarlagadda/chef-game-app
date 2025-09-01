@@ -55,7 +55,9 @@ fun chefmania(
         }
 
         composable(route = ChefMania.HowtoPlay.name) {
-            InstruScreen().instructions()
+            InstruScreen().instructions(
+                {navController.navigate(ChefMania.Home.name)}
+            )
         }
     }
 }

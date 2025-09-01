@@ -12,9 +12,11 @@ data class GameUiState(
     var highlights: List<Coordinate>? = null,
     var turn: Player = Player(name = "", pieces = emptyList(), homeBase =  Coordinate(0,0)),
     val movesets: List<MoveSet> = emptyList(),
+    var newMovesetIndex: Int = 4,
     val players: List<Player> = emptyList(),
     var winner: Player? = null,
     var standby: MoveSet? = null,
+    var moves: List<Move> = emptyList(),
     val squares: List<List<Coordinate>> = listOf(
         listOf(Coordinate(0,0),
             Coordinate(0,1),

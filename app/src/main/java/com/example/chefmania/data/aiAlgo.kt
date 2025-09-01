@@ -38,10 +38,14 @@ open class AIAlgo(
                             temp.turn = temp.players[0]
                         }
 
+
                         temp.players[0].opp = temp.players[1]
                         temp.players[1].opp = temp.players[0]
 
                         val plyr = temp.turn.opp!!
+                        temp.currentSelectedPiece = plyr.pieces[j]
+                        temp.highlights = listOf(plyr.pieces[j].pos)
+                        temp.newMovesetIndex = i
                         var mainFound = false
                         val oldMain = plyr.main
                         plyr.pieces = currentPlayer.pieces.map {

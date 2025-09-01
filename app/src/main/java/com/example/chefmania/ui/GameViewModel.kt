@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import com.example.chefmania.data.Move
 import kotlinx.coroutines.launch
 
 class GameViewModel: ViewModel() {
@@ -124,14 +125,21 @@ class GameViewModel: ViewModel() {
 
     fun move(piece: Piece, cord: Coordinate, plyr: Player){
         piece.move(cord, plyr)
+        val move = Move(1,
+            piece.pos, cord, 4)
+
         _uiState.update {
             GameUiState ->
             if(GameUiState.currentSelectedMovSet?.name == GameUiState.players[0].movesets[0].name){
                 GameUiState.players[0].movesets[0] = GameUiState.standby!!
+                move.newCard = 0
             }
             else{
                 GameUiState.players[0].movesets[1] = GameUiState.standby!!
+                move.newCard = 1
             }
+            val i = GameUiState.moves.toMutableList()
+            i.add(move)
             GameUiState.turn.opp?.let { GameUiState.copy(
                 AIRunning = true,
                 currentSelectedPiece = null,
@@ -140,6 +148,7 @@ class GameViewModel: ViewModel() {
                 turn = it,
                 standby = GameUiState.currentSelectedMovSet,
                 winner = if(plyr.won) plyr else GameUiState.winner,
+                moves = i
             ) }!!
 
 
@@ -165,6 +174,12 @@ class GameViewModel: ViewModel() {
                 algo.makeMove(_uiState.value)
             }.copy(AIRunning = false)
 
+            val move = Move(1,
+                bestMove.highlights!![0], bestMove.currentSelectedPiece?.pos!!, bestMove.newMovesetIndex)
+
+            val mutableMoves = bestMove.moves.toMutableList()
+            mutableMoves.add(move)
+            bestMove.moves = mutableMoves
             _uiState.update { bestMove }
         }
     }
